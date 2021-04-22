@@ -44,6 +44,10 @@ class LoginSerializer(serializers.ModelSerializer):
   roleid = serializers.IntegerField(source='roleid.id', read_only=True)
   token = serializers.CharField(max_length=255, read_only=True)
 
+  class Meta:
+    model = User
+    fields = ['username', 'password', 'roleid', 'token']
+
   def validate(self, data):
     username = data.get('username', None)
     password = data.get('password', None)
@@ -63,7 +67,7 @@ class LoginSerializer(serializers.ModelSerializer):
       raise serializers.ValidationError('This user has been deactivated.')
 
     return {
-      # 'roleid': user.roleid,
+      'roleid': user.roleid,
       'token': user.token
     }
 
