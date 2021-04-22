@@ -1,6 +1,5 @@
 from django.urls import path
 from crmfood_app import views
-# from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     path('departments/', views.DepartmentListAPIView.as_view(), name = 'DepartmentList'),
@@ -25,5 +24,3 @@ urlpatterns = [
     path('checks/', views.ChecksListAPIView.as_view(), name = 'Checks'),
     path('checks/<int:pk>', views.ChecksDetailAPIView().as_view(), name = 'Checks'),
 ]
-
-# urlpatterns = format_suffix_patterns(urlpatterns)
