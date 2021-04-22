@@ -1,5 +1,4 @@
 from django.urls import path
-# from rest_framework.urlpatterns import format_suffix_patterns
 from .views import *
 
 app_name = 'users'
@@ -13,5 +12,3 @@ urlpatterns = [
     path('roles/<int:pk>/', RoleDetails.as_view()),
     path('changepassword/', ChangePasswordView.as_view()),
 ]
-
-# urlpatterns = format_suffix_patterns(urlpatterns)

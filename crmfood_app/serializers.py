@@ -65,7 +65,7 @@ class CheckSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Check
-        fields = ['id', 'orderid', 'date', 'meal', 'totalSum']
+        fields = ['id', 'orderid', 'date', 'meal']
 
 
 class DepartmentSerializer(serializers.ModelSerializer):

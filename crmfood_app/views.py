@@ -268,25 +268,31 @@ class ChecksListAPIView(APIView):
   def get(self, request, format = None):
     checks = Check.objects.all()
     serializer = CheckSerializer(checks, many = True)
-    data = serializer.data
-    for item in data:
-      orderid = item['orderid']
-      meals = OneMealToOrderSerializer(OneMealToOrder.objects.filter(orderid=orderid), many=True)
-      tmp = []
-      for meal in meals.data:
-        m = Meal.objects.get(id=meal['mealid'])
-        tmp.append({
-          'name': m.name,
-          'amount': meal['count'],
-          'price': m.price,
-          'total': meal['count'] * m.price
-        })
-      item.update({'meals': tmp})
-    return Response(data)
+    return Response(serializer.data)
     
   def post(self, request, format = None):
     serializer = CheckSerializer(data=request.data)
     if serializer.is_valid():
       serializer.save()
       return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ChecksDetailAPIView(APIView):
+  def get(self, request, pk, format=None):
+    checks = Check.objects.get(pk=pk)
+    serializer = CheckSerializer(checks)
+    return Response(serializer.data)
+
+  def delete(self, request, pk, format=None):
+    checks = Checks.objects.get(pk=pk)
+    checks.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+  def put(self, request, pk, format=None):
+    checks = Check.objects.get(pk=pk)
+    serializer = serializers.CheckSerializer(checks, data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

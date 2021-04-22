@@ -8,6 +8,9 @@ class ServicePercentage(models.Model):
   def __str__(self):
       return str(self.percentage)
 
+  class Meta:
+    verbose_name_plural = "ServicesPercentage"
+
   
 class Status(models.Model):
   name = models.CharField(max_length=50)
@@ -15,12 +18,18 @@ class Status(models.Model):
   def __str__(self):
       return self.name
 
+  class Meta:
+    verbose_name_plural = "Statuses"
+
 
 class Table(models.Model):
   name = models.CharField(max_length=50)
 
   def __str__(self):
       return self.name
+
+  class Meta:
+    verbose_name_plural = "Tables"
   
 
 class Order(models.Model):
@@ -34,6 +43,9 @@ class Order(models.Model):
 
   def __str__(self):
       return str(self.id)
+
+  class Meta:
+    verbose_name_plural = "Orders"
   
   
 class Department(models.Model):
@@ -42,6 +54,9 @@ class Department(models.Model):
   def __str__(self):
       return self.name
 
+  class Meta:
+    verbose_name_plural = "Departments"
+
 
 class MealCategory(models.Model):
   name = models.CharField(max_length=50, unique=True)
@@ -49,6 +64,9 @@ class MealCategory(models.Model):
 
   def __str__(self):
       return self.name
+
+  class Meta:
+    verbose_name_plural = "MealCategories"
   
   
 class Meal(models.Model):
@@ -59,6 +77,9 @@ class Meal(models.Model):
 
   def __str__(self):
       return self.name
+
+  class Meta:
+    verbose_name_plural = "Meals"
   
 
 
@@ -73,13 +94,16 @@ class MealToOrder(models.Model):
   def __str__(self):
       return str(self.orderid.id)
 
+  class Meta:
+    verbose_name_plural = "MealsToOrder"
+
 
 class Check(models.Model):
   orderid = models.ForeignKey(Order, related_name='checks', on_delete=models.CASCADE)
   date = models.DateTimeField(auto_now_add=True)
 
-  def totalSum(self):
-    return sum([i.Summ() for i in MealToOrder.objects.filter(orderid=self.orderid)]) + ServicePercentage.objects.latest('id').percentage
-
   def __str__(self):
       return str(self.orderid)
+
+  class Meta:
+    verbose_name_plural = "Checks"

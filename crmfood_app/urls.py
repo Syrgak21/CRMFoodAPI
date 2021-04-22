@@ -23,6 +23,7 @@ urlpatterns = [
     path('activeorders/', views.ActiveOrdersAPIView.as_view(), name = 'ActiveOrders'),
     path('mealstoorder/<int:pk>', views.MealsToOrderAPIView.as_view(), name = 'MealsOfOrder'),
     path('checks/', views.ChecksListAPIView.as_view(), name = 'Checks'),
+    path('checks/<int:pk>', views.ChecksDetailAPIView().as_view(), name = 'Checks'),
 ]
 
 # urlpatterns = format_suffix_patterns(urlpatterns)
