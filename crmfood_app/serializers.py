@@ -60,12 +60,26 @@ class MealToOrderSerializer(serializers.ModelSerializer):
         return order
 
 
+class SmSerializer(serializers.ModelSerializer):
+    mealid = serializers.PrimaryKeyRelatedField(queryset=Meal.objects.all())
+
+    class Meta:
+        model = MealToOrder
+        fields = ['mealid', 'count']
+
+
 class CheckSerializer(serializers.ModelSerializer):
-    meal = MealToOrderSerializer(many=True, read_only=True, source='orderid__meals')
+    meal = SmSerializer(many=True, source='orderid.mealsid.all', read_only=True)
+    orderid = serializers.PrimaryKeyRelatedField(queryset=Order.objects.all())
 
     class Meta:
         model = Check
-        fields = ['id', 'orderid', 'date', 'meal']
+        fields = ['id', 'orderid', 'date', 'servicefee', 'total_sum', 'meal']
+        read_only_fields = ['id', 'date', 'servicefee', 'total_sum']
+
+    def create(self, validated_data):
+        check = Check.objects.create_check(**validated_data)
+        return check
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
@@ -84,3 +98,5 @@ class MealSerializer(serializers.ModelSerializer):
     class Meta:
         model = Meal
         fields = '__all__'
+
+

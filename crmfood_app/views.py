@@ -242,7 +242,7 @@ class ActiveOrdersAPIView(APIView):
 class MealsToOrderAPIView(APIView):
   def get(self, request, pk, format = None):
     orders = Order.objects.filter(id = self.kwargs['pk'])
-    serializer = MealsToOrderSerializer(orders, many = True)
+    serializer = MealToOrderSerializer(orders, many = True)
     return Response(serializer.data)
     
   def post(self, request, format = None):

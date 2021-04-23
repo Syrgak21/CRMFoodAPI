@@ -1,6 +1,7 @@
-from django.db import models
+from django.db import models, IntegrityError
 from user.models import User
 from django.core.validators import MinValueValidator
+from django.conf import settings
 
 class ServicePercentage(models.Model):
   percentage = models.IntegerField(null=False)
@@ -88,8 +89,8 @@ class MealToOrder(models.Model):
   mealid = models.ForeignKey(Meal, related_name='mealsid', on_delete=models.CASCADE)
   count = models.IntegerField()
 
-  def Summ(self):
-    return self.count * Meal.objects.get(id=self.meal.id).price
+  def get_total_price(self):
+    return self.count * self.mealid.price
 
   def __str__(self):
       return str(self.orderid.id)
@@ -98,12 +99,37 @@ class MealToOrder(models.Model):
     verbose_name_plural = "MealsToOrder"
 
 
+
+class CheckManager(models.Manager):
+  def create_check(self, orderid):
+    if not orderid:
+      raise IntegrityError("Order is required!")
+
+    orderid.isitopen = False
+
+    prices = [i.get_total_price() for i in orderid.mealid.all()]
+    total_sum = sum(prices)
+
+    servicefee = total_sum / 4
+    check = self.model(
+      orderid=orderid,
+      servicefee=servicefee,
+      total_sum=total_sum
+    )
+    check.save()
+    return check
+
+
 class Check(models.Model):
   orderid = models.ForeignKey(Order, related_name='checks', on_delete=models.CASCADE)
   date = models.DateTimeField(auto_now_add=True)
+  servicefee = models.IntegerField()
+  total_sum = models.IntegerField()
+
+  objects = CheckManager()
 
   def __str__(self):
-      return str(self.orderid)
+      return f"{self.orderid.pk}, Date-{self.date}, Total sum-{self.total_sum}"
 
   class Meta:
     verbose_name_plural = "Checks"
