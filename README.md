@@ -29,7 +29,7 @@ pip install requirements.txt
 
 To start the API enter the commands
 ```
-cd courses
+cd crmfood
 python manage.py runserver
 ```
 Follow the links:
